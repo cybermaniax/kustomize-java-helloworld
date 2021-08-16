@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld
+  labels:
+    app: helloworld
+    version: "1.0.0"
+    app.kubernetes.io/name: helloworld
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/instance: "8d007602"
+    app.kubernetes.io/component: microservice
+    app.kubernetes.io/part-of: helloworld
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: helloworld
+      app.kubernetes.io/version: "1.0.0"
+      app.kubernetes.io/instance: "8d007602"
+  template:
+    metadata:
+      labels:
+        app: helloworld
+        version: "1.0.0"
+        app.kubernetes.io/name: helloworld
+        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/instance: "8d007602"
+        app.kubernetes.io/component: microservice
+        app.kubernetes.io/part-of: helloworld
+    spec:
+      containers:
+      - name: helloworld
+        image: demo/spring-boot-helloworld-for-k8s:last
+        imagePullPolicy: Never
+        env:
+        - name: JAVA_TOOL_OPTIONS
+          value: >-
+            -XX:MinRAMPercentage=40 -XX:MaxRAMPercentage=90
+            -XX:MaxDirectMemorySize=10M
+            -XX:MaxMetaspaceSize=96435K
+            -XX:ReservedCodeCacheSize=240M
+            -Xss1M
+        ports:
+        - containerPort: 8080
+        - containerPort: 8081
+        - containerPort: 8787
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 3
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8081
+          initialDelaySeconds: 25
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 1
+          successThreshold: 1
