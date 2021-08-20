@@ -20,15 +20,15 @@ spec:
         - name: SPRING_CONFIG_LOCATION
           value: "classpath:/,file:/config/"
         - name: SPRING_PROFILES_ACTIVE
-          value: "k8s"
+          value: kubernetes
         volumeMounts:
           - name: helloworld-config
-            mountPath: "/config"
+            mountPath: /config
             readOnly: true
       volumes:
         - name: helloworld-config
           configMap:
             name: helloworld-config-map
             items:
-              - key: "application-k8s.properties"
-                path: "application-k8s.properties"
+              - key: application-kubernetes.properties
+                path: application-kubernetes.properties

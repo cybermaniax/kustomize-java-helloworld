@@ -8,5 +8,5 @@ patchesStrategicMerge:
 configMapGenerator:
   - name: helloworld-config-map
     files:
-      - application-k8s.properties
+      - application-kubernetes.properties
 namePrefix: dev-
