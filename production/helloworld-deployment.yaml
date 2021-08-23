@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld
+spec:
+  template:
+    spec:
+      serviceAccountName: helloworld-service-account
+      containers:
+      - name: helloworld
+        imagePullPolicy: Never # Always
+        env:
+        - name: JAVA_TOOL_OPTIONS
+          value: >-
+            -XX:MinRAMPercentage=40 -XX:MaxRAMPercentage=90
+            -XX:MaxDirectMemorySize=10M
+            -XX:MaxMetaspaceSize=96435K
+            -XX:ReservedCodeCacheSize=240M
+            -XX:+ExitOnOutOfMemoryError
+            -Xss1M
+            -Djava.net.preferIPv4Stack=true
+            -Djava.awt.headless=true
+            -Djava.security.egd=file:/dev/./urandom
+        - name: SPRING_CONFIG_LOCATION
+          value: "classpath:/,file:/config/"
+        - name: SPRING_PROFILES_ACTIVE
+          value: kubernetes
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65532
+          runAsGroup: 65532
+        resources:
+          requests:
+            memory: "190Mi"
+            cpu: "0.5"
+          limits:
+            memory: "250Mi"
+            cpu: "1"
+        volumeMounts:
+          - name: helloworld-config
+            mountPath: /config
+            readOnly: true
+      volumes:
+        - name: helloworld-config
+          configMap:
+            name: helloworld-config-map
+            items:
+              - key: application-kubernetes.properties
+                path: application-kubernetes.properties

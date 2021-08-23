@@ -18,9 +18,6 @@ spec:
     - name: http-actuator
       port: 8081
       protocol: TCP
-    - name: http-debug
-      port: 8787
-      protocol: TCP
   selector:
     app.kubernetes.io/name: helloworld
     app.kubernetes.io/instance: helloworld-8d007602

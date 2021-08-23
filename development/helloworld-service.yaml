@@ -3,4 +3,8 @@ kind: Service
 metadata:
   name: helloworld
 spec:
+  ports:
+    - name: http-debug
+      port: 8787
+      protocol: TCP
   type: NodePort
